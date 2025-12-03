@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>King Lear Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+        color: #ffffff;
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    .view {
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .view.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Main Menu Styles */
+    .main-menu {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+        padding-top: 80px;
+    }
+
+    .main-menu h1 {
+        font-size: 56px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 40px rgba(102, 126, 234, 0.3);
+        animation: fadeInDown 0.8s ease;
+    }
+
+    .main-menu .subtitle {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 60px;
+        animation: fadeInDown 0.8s ease 0.2s backwards;
+    }
+
+    .menu-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        animation: fadeInUp 0.8s ease 0.4s backwards;
+    }
+
+    .menu-btn {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        font-size: 24px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .menu-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .menu-btn:hover::before {
+        left: 100%;
+    }
+
+    .menu-btn:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(102, 126, 234, 0.5);
+        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .menu-btn:active {
+        transform: translateY(-2px);
+    }
+
+    .menu-btn-label {
+        display: block;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 8px;
+        font-weight: 400;
+    }
+
+    /* Quiz Container Styles */
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 60px;
+        animation: fadeInDown 0.8s ease;
+    }
+
+    .back-button {
+        position: fixed;
+        top: 30px;
+        left: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 12px 24px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .back-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(-5px);
+    }
+
+    .back-button::before {
+        content: "←";
+        font-size: 20px;
+    }
+
+    .form-label {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 48px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .subtitle {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 400;
+    }
+
+    .question-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        padding: 35px;
+        margin-bottom: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .question-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+        border-color: rgba(102, 126, 234, 0.3);
+    }
+
+    .question-number {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .quote {
+        font-size: 18px;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.9);
+        font-style: italic;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 3px solid rgba(102, 126, 234, 0.5);
+        border-radius: 8px;
+    }
+
+    .instruction {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .options {
+        display: grid;
+        gap: 12px;
+    }
+
+    .option {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 16px 20px;
+        border-radius: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .option:hover {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(5px);
+    }
+
+    .option.correct {
+        background: linear-gradient(135deg, rgba(52, 211, 153, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+        border: 2px solid rgba(52, 211, 153, 0.5);
+        box-shadow: 0 0 25px rgba(52, 211, 153, 0.3), inset 0 0 20px rgba(52, 211, 153, 0.1);
+        position: relative;
+    }
+
+    .option.correct::before {
+        content: "✓";
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px;
+        color: #34d399;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(52, 211, 153, 0.5);
+    }
+
+    .option.correct:hover {
+        background: linear-gradient(135deg, rgba(52, 211, 153, 0.25) 0%, rgba(16, 185, 129, 0.25) 100%);
+        transform: translateX(0) scale(1.02);
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .question-card:nth-child(1) { animation-delay: 0.1s; }
+    .question-card:nth-child(2) { animation-delay: 0.15s; }
+    .question-card:nth-child(3) { animation-delay: 0.2s; }
+    .question-card:nth-child(4) { animation-delay: 0.25s; }
+    .question-card:nth-child(5) { animation-delay: 0.3s; }
+    .question-card:nth-child(6) { animation-delay: 0.35s; }
+    .question-card:nth-child(7) { animation-delay: 0.4s; }
+    .question-card:nth-child(8) { animation-delay: 0.45s; }
+    .question-card:nth-child(9) { animation-delay: 0.5s; }
+    .question-card:nth-child(10) { animation-delay: 0.55s; }
+    .question-card:nth-child(11) { animation-delay: 0.6s; }
+
+    footer {
+        text-align: center;
+        margin-top: 60px;
+        padding: 30px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding: 20px 15px;
+        }
+
+        .main-menu {
+            padding-top: 40px;
+        }
+
+        .main-menu h1 {
+            font-size: 40px;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        .question-card {
+            padding: 25px;
+        }
+
+        .quote {
+            font-size: 16px;
+        }
+
+        .back-button {
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .menu-btn {
+            padding: 25px;
+            font-size: 20px;
+        }
+    }
+</style>
+
+
+</head>
+<body>
+    <!-- Main Menu -->
+    <div id="mainMenu" class="view active">
+        <div class="main-menu">
+            <h1>King Lear Quiz</h1>
+            <p class="subtitle">Select a quiz form to begin</p>
+            <div class="menu-buttons">
+                <button class="menu-btn" onclick="showQuiz('formA')">
+                    Form A
+                    <span class="menu-btn-label">10 Questions</span>
+                </button>
+                <button class="menu-btn" onclick="showQuiz('formB')">
+                    Form B
+                    <span class="menu-btn-label">10 Questions</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Form A -->
+<div id="formA" class="view">
+    <button class="back-button" onclick="showMenu()">Menu</button>
+    <div class="container">
+        <div class="header">
+            <div class="form-label">FORM A</div>
+            <h1>King Lear Quiz</h1>
+            <p class="subtitle">Unless otherwise indicated, identify the speaker.</p>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 1</div>
+            <div class="quote">"Thee and thy virtues here I seize upon:<br>Be it lawful I take up what's cast away.<br>Gods, gods! 'tis strange that from their cold'st neglect<br>My love should kindle to inflamed respect.<br>Thy dowerless daughter, king, thrown to my chance,<br>Is queen of us...<br>Not all the dukes of waterish Burgundy<br>Can buy this unprized precious maid of me."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Kent</div>
+                <div class="option correct">France</div>
+                <div class="option">Gloucester</div>
+                <div class="option">Edgar</div>
+                <div class="option">Burgundy</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 2</div>
+            <div class="quote">"Why brand they us<br>With base? with baseness? bastardy? base, base?<br>Who, in the lusty stealth of nature, take<br>More composition and fierce quality<br>Than doth, within a dull, stale, tired bed,<br>Go to the creating a whole tribe of fops,<br>Got 'tween asleep and wake?"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Lear</div>
+                <div class="option">Kent</div>
+                <div class="option correct">Edmund</div>
+                <div class="option">The Fool</div>
+                <div class="option">Edgar</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 3</div>
+            <div class="quote">"Why, after I have cut the egg i' the middle, and eat up the meat, the two crowns of the egg. When thou clovest thy crown i' the middle, and gavest away both parts, thou borest thy ass on thy back o'er the dirt: thou hadst little wit in thy bald crown, when thou gavest thy golden one away."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Goneril</div>
+                <div class="option">Kent</div>
+                <div class="option">Cordelia</div>
+                <div class="option">Cornwall</div>
+                <div class="option correct">The Fool</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 4</div>
+            <div class="quote">"This is some fellow,<br>Who, having been praised for bluntness, doth affect<br>A saucy roughness, and constrains the garb<br>Quite from his nature: he cannot flatter, he,<br>An honest mind and plain, he must speak truth!<br>An they will take it, so; if not, he's plain.<br>These kind of knaves I know, which in this plainness<br>Harbour more craft and more corrupter ends<br>Than twenty silly ducking observants<br>That stretch their duties nicely."</div>
+            <div class="instruction">The speaker is referring to:</div>
+            <div class="options">
+                <div class="option">Goneril</div>
+                <div class="option">Cordelia</div>
+                <div class="option correct">Kent</div>
+                <div class="option">Cornwall</div>
+                <div class="option">Lear</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 5</div>
+            <div class="quote">"O, reason not the need: our basest beggars<br>Are in the poorest thing superfluous:<br>Allow not nature more than nature needs,<br>Man's life's as cheap as beast's: thou art a lady;<br>If only to go warm were gorgeous,<br>Why, nature needs not what thou gorgeous wear'st,<br>Which scarcely keeps thee warm."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option correct">Lear</div>
+                <div class="option">Edgar</div>
+                <div class="option">Goneril</div>
+                <div class="option">Cornwall</div>
+                <div class="option">Gloucester</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 6</div>
+            <div class="quote">"Why, thou wert better in thy grave than to answer with thy uncovered body this extremity of the skies. Is man no more than this? Consider him well. Thou owest the worm no silk, the beast no hide, the sheep no wool, the cat no perfume. Ha! here's three on's are sophisticated! Thou art the thing itself: unaccommodated man is no more but such a poor bare, forked animal as thou art. Off, off, you lendings!"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Kent</div>
+                <div class="option">Gloucester</div>
+                <div class="option">Cornwall</div>
+                <div class="option">Edgar</div>
+                <div class="option correct">Lear</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 7</div>
+            <div class="quote">"Hadst thou been aught but gossamer, feathers, air,<br>So many fathom down precipitating,<br>Thou'dst shiver'd like an egg: but thou dost breathe;<br>Hast heavy substance; bleed'st not; speak'st; art sound.<br>Ten masts at each make not the altitude<br>Which thou hast perpendicularly fell:<br>Thy life's a miracle. Speak yet again."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option correct">Edgar</div>
+                <div class="option">Edmund</div>
+                <div class="option">Kent</div>
+                <div class="option">The Fool</div>
+                <div class="option">Gloucester</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 8</div>
+            <div class="quote">"You do me wrong to take me out o' the grave:<br>Thou art a soul in bliss; but I am bound<br>Upon a wheel of fire, that mine own tears<br>Do scald like moulten lead."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Edmund</div>
+                <div class="option">Gloucester</div>
+                <div class="option correct">Lear</div>
+                <div class="option">Kent</div>
+                <div class="option">Edgar</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 9</div>
+            <div class="quote">"Know, my name is lost;<br>By treason's tooth bare-gnawn and canker-bit:<br>Yet am I noble as the adversary<br>I come to cope."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Kent</div>
+                <div class="option correct">Edgar</div>
+                <div class="option">Albany</div>
+                <div class="option">Gloucester</div>
+                <div class="option">Edmund</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 10</div>
+            <div class="quote">"Why should a dog, a horse, a rat, have life,<br>And thou no breath at all? Thou'lt come no more,<br>Never, never, never, never, never!"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Cornwall</div>
+                <div class="option correct">Lear</div>
+                <div class="option">Gloucester</div>
+                <div class="option">Kent</div>
+                <div class="option">Edmund</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>King Lear Quiz • Form A • Answer Key</p>
+        </footer>
+    </div>
+</div>
+
+<!-- Form B -->
+<div id="formB" class="view">
+    <button class="back-button" onclick="showMenu()">Menu</button>
+    <div class="container">
+        <div class="header">
+            <div class="form-label">FORM B</div>
+            <h1>King Lear Quiz</h1>
+            <p class="subtitle">Unless otherwise indicated, identify the speaker.</p>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 1</div>
+            <div class="quote">"Where is your servant Caius? [Lear. He's a good fellow, I can tell you that. He'll strike, and quickly too. He's dead and rotten.] No, my good lord; I am the very man-"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Gloucester</div>
+                <div class="option correct">Kent</div>
+                <div class="option">Edgar</div>
+                <div class="option">The Fool</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 2</div>
+            <div class="quote">"When we are born, we cry that we are come / To this great stage of fools..../ I'll put't in proof, / And when I have stol'n upon these sons-in-law, / Then kill, kill, kill, kill, kill, kill!"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Oswald</div>
+                <div class="option correct">Lear</div>
+                <div class="option">Kent</div>
+                <div class="option">Cordelia</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 3</div>
+            <div class="quote">"Unhappy that I am, I cannot heave / My heart into my mouth. I love your Majesty / According to my bond; no more nor less."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option correct">Cordelia</div>
+                <div class="option">Gloucester</div>
+                <div class="option">Regan</div>
+                <div class="option">Kent</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 4</div>
+            <div class="quote">"Well, my legitimate, if this letter speed, And my invention thrive, ... the base Shall top th' legitimate. I grow; I prosper. Now, gods, stand up for bastards!"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">The Fool</div>
+                <div class="option correct">Edmund</div>
+                <div class="option">Lear</div>
+                <div class="option">Edgar</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 5</div>
+            <div class="quote">"No? What needed then that terrible dispatch of it into your pocket? The quality of nothing hath not such need to hide itself. Let's see. Come, if it be nothing, I shall not need spectacles."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Lear</div>
+                <div class="option correct">Gloucester</div>
+                <div class="option">Kent</div>
+                <div class="option">The Fool</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 6</div>
+            <div class="quote">"I marvel what kin thou and thy daughters are. They'll have me whipp'd for speaking true; thou'lt have me whipp'd for lying; and sometimes I am whipp'd for holding my peace. I had rather be any kind o' thing than a fool! And yet I would not be thee, nuncle. Thou hast pared thy wit o' both sides and left nothing i' th' middle."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Edgar</div>
+                <div class="option">Edmund</div>
+                <div class="option">Oswald</div>
+                <div class="option correct">The Fool</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 7</div>
+            <div class="quote">"If thou didst intend / To make this creature fruitful. / Into her womb convey sterility; / Dry up in her the organs of increase; / And from her derogate body never spring / A babe to honour her!"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Cordelia</div>
+                <div class="option">Regan</div>
+                <div class="option">Goneril</div>
+                <div class="option correct">Lear</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 8</div>
+            <div class="quote">"Milk-liver'd man! / That bear'st a cheek for blows, a head for wrongs... France spreads his banners in our noiseless land... / Whiles thou, a moral fool, sit'st still, and criest / 'Alack, why does he so?'"</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option correct">Goneril</div>
+                <div class="option">The Fool</div>
+                <div class="option">Cordelia</div>
+                <div class="option">Edgar</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 9</div>
+            <div class="quote">"Who gives anything to poor Tom? whom the foul fiend hath led through fire and through flame, through ford and whirlpool, o'er bog and quagmire... Bless thy five wits! Tom's acold."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option correct">Edgar</div>
+                <div class="option">Lear</div>
+                <div class="option">Edmund</div>
+                <div class="option">The Fool</div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-number">Question 10</div>
+            <div class="quote">"Here do you keep a hundred knights and squires; / Men so disorder'd, so debosh'd, and bold / That this our court, infected with their manners, / Shows like a riotous inn. Epicurism and lust / Make it more like a tavern or a brothel / Than a grac'd palace."</div>
+            <div class="instruction">Identify the speaker:</div>
+            <div class="options">
+                <div class="option">Cordelia</div>
+                <div class="option correct">Goneril</div>
+                <div class="option">Oswald</div>
+                <div class="option">Edgar</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>King Lear Quiz • Form B • Answer Key</p>
+        </footer>
+    </div>
+</div>
+
+<script>
+    function showMenu() {
+        document.getElementById('mainMenu').classList.add('active');
+        document.getElementById('formA').classList.remove('active');
+        document.getElementById('formB').classList.remove('active');
+        window.scrollTo(0, 0);
+    }
+
+    function showQuiz(formId) {
+        document.getElementById('mainMenu').classList.remove('active');
+        document.getElementById('formA').classList.remove('active');
+        document.getElementById('formB').classList.remove('active');
+        document.getElementById(formId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+</script>
+
+</body>
+</html>
